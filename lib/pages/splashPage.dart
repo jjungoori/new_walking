@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:new_walking/Controllers/authController.dart';
 import 'package:rive/rive.dart';
 import 'package:flutter/services.dart';
 import 'package:new_walking/datas.dart';
 import 'package:new_walking/widgets/animations.dart';
 import '../datas.dart';
+import 'package:get/get.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
@@ -22,6 +25,11 @@ class SplashPage extends StatelessWidget {
                 style: TextDatas.splashTitle,
               ),
               startTime: 2000,
+              onEnd: (){
+                if (!KakaoLoginController.to.isLoggedIn.value) {
+                  Get.toNamed('/login');
+                }
+              },
             ),
             Center(
               child:const MyLogoAnim(),

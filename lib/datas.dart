@@ -36,7 +36,7 @@ class ColorDatas{
 class TextDatas{
   static const TextStyle title = TextStyle(
       fontFamily: 'Pretendard',
-      fontSize: 32,
+      fontSize: 24,
       fontWeight: FontWeight.w300,
       color: ColorDatas.onBackground
     // fontWeight: FontWeight.w600
@@ -52,7 +52,7 @@ class TextDatas{
 
   static const TextStyle subtitle = TextStyle(
       fontFamily: 'Pretendard',
-      fontSize: 24,
+      fontSize: 20,
       fontWeight: FontWeight.w200,
       color: ColorDatas.onBackground
     // fontWeight: FontWeight.w600
@@ -60,20 +60,20 @@ class TextDatas{
 
   static const TextStyle description = TextStyle(
       fontFamily: 'Pretendard',
-      fontSize: 18,
+      fontSize: 16,
       color: ColorDatas.onBackgroundSoft
   );
 
   static const TextStyle bottomButton = TextStyle(
       fontFamily: 'Pretendard',
-      fontSize: 24,
+      fontSize: 20,
       fontWeight: FontWeight.w300,
       color: ColorDatas.onPrimaryTitle
   );
 
   static const TextStyle importantText = TextStyle(
       fontFamily: 'Pretendard',
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: FontWeight.w400,
       color: ColorDatas.onBackground
     // fontWeight: FontWeight.w600

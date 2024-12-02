@@ -139,9 +139,7 @@ class MySquareButton extends StatelessWidget {
   }
 }
 
-
 class MyAnimatedButton extends StatefulWidget {
-  // final Widget child;
   final VoidCallback onPressed;
   final Widget child;
   final Color color;
@@ -153,14 +151,15 @@ class MyAnimatedButton extends StatefulWidget {
     required this.child,
     required this.color,
     this.gradient,
-    this.shadows
+    this.shadows,
   });
 
   @override
   _MyAnimatedButtonState createState() => _MyAnimatedButtonState();
 }
 
-class _MyAnimatedButtonState extends State<MyAnimatedButton> with SingleTickerProviderStateMixin {
+class _MyAnimatedButtonState extends State<MyAnimatedButton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleDownAnimation;
   late Animation<double> _scaleUpAnimation;
@@ -168,15 +167,14 @@ class _MyAnimatedButtonState extends State<MyAnimatedButton> with SingleTickerPr
 
   @override
   void initState() {
-    double targetSize = 0.9; // 버튼이 작아지는 정도
     super.initState();
-// 애니메이션 컨트롤러 생성
+
+    double targetSize = 0.9; // 버튼이 작아지는 정도
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 500), // 애니메이션 속도 설정
+      duration: Duration(milliseconds: 500),
     );
 
-    // 애니메이션 설정 (두 개의 Tween을 사용)
     _scaleDownAnimation = Tween<double>(begin: 1.0, end: targetSize).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOutCirc),
     );
@@ -187,21 +185,34 @@ class _MyAnimatedButtonState extends State<MyAnimatedButton> with SingleTickerPr
   }
 
   void _onTapDown(TapDownDetails details) {
-    // 버튼을 눌렀을 때 애니메이션 시작 (스케일 다운)
-    reverse = false;
-    if (true) {
-      _controller.forward(from: 0.0);  // 애니메이션을 처음부터 시작
+    if (mounted) {
+      reverse = false;
+      _controller.forward(from: 0.0); // 애니메이션을 처음부터 시작
     }
   }
-
 
   void _onTapCancel() {
-    // 버튼이 취소되었을 때 애니메이션 되돌리기
-    reverse = true;
-    if (true) {
-      _controller.forward(from: 0.0);  // 애니메이션을 처음부터 시작 (스케일 업)
+    if (mounted) {
+      Future.delayed(Duration(milliseconds: 30), () {
+        if (mounted) { // mounted 상태를 다시 확인
+          reverse = true;
+          _controller.forward(from: 0.0);
+        }
+      });
     }
   }
+
+  void _onTapUp() {
+    if (mounted) {
+      Future.delayed(Duration(milliseconds: 30), () {
+        if (mounted) { // mounted 상태를 다시 확인
+          reverse = true;
+          _controller.forward(from: 0.0);
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -209,27 +220,28 @@ class _MyAnimatedButtonState extends State<MyAnimatedButton> with SingleTickerPr
         animation: _controller,
         builder: (context, child) {
           return Transform.scale(
-            scale: !reverse
-                ? _scaleDownAnimation.value
-                : _scaleUpAnimation.value,
+            scale: !reverse ? _scaleDownAnimation.value : _scaleUpAnimation.value,
             child: ClipRRect(
-              borderRadius: DefaultDatas.borderRadius, // 버튼 경계에 맞게 설정
-              child: InkWell(
-                onTap: widget.onPressed,
-                onTapDown: (details) => _onTapDown(details),
-                onTapUp: (details) => _onTapCancel(),
-                onTapCancel: () => _onTapCancel(),
-                borderRadius: DefaultDatas.borderRadius,
-                splashColor: ColorDatas.splashColor,
-                child: Ink(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: widget.color,
-                    gradient: widget.gradient,
-                    borderRadius: DefaultDatas.borderRadius,
-                    boxShadow: widget.shadows,
+              borderRadius: DefaultDatas.borderRadius,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: widget.onPressed,
+                  onTapDown: _onTapDown,
+                  onTapUp: (details) => _onTapUp(),
+                  onTapCancel: _onTapCancel,
+                  borderRadius: DefaultDatas.borderRadius,
+                  splashColor: ColorDatas.splashColor,
+                  child: Ink(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: widget.color,
+                      gradient: widget.gradient,
+                      borderRadius: DefaultDatas.borderRadius,
+                      boxShadow: widget.shadows,
+                    ),
+                    child: widget.child,
                   ),
-                  child: widget.child,
                 ),
               ),
             ),
@@ -238,7 +250,6 @@ class _MyAnimatedButtonState extends State<MyAnimatedButton> with SingleTickerPr
       ),
     );
   }
-
 
   @override
   void dispose() {
@@ -328,9 +339,8 @@ class MyAnimatedAddButton extends StatelessWidget {
             ),
             SizedBox(width: 18,),
             Text("버스 추가하기",
-                style: TextDatas.title.copyWith(
+                style: TextDatas.description.copyWith(
                     color: only ? ColorDatas.onPrimaryTitle : ColorDatas.onBackgroundSoft,
-                    fontSize: 16
                 )
             )
           ],
@@ -367,9 +377,8 @@ class MyAnimatedBusButton extends StatelessWidget {
               // ),
               // SizedBox(width: 18,),
               Text(title,
-                  style: TextDatas.title.copyWith(
+                  style: TextDatas.description.copyWith(
                       color: ColorDatas.onPrimaryTitle,
-                      fontSize: 18
                   )
               )
             ],

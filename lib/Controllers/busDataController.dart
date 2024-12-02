@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-class BusDataController extends GetxController {
+class BusDataController extends GetxService {
   static BusDataController get to => Get.find();
   var busData = [].obs;
   // var busDataLength = 0.obs;

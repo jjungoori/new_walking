@@ -21,6 +21,26 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
+
+	//여기 추가
+	<key>CFBundleURLTypes</key>
+     <array>
+      <dict>
+       <key>CFBundleTypeRole</key>
+       <string>Editor</string>
+       <key>CFBundleURLSchemes</key>
+       <array>
+        <string>kakao${YOUR_NATIVE_APP_KEY}</string>
+          // 내 애플리케이션 > 앱 설정 > 요약정보 네이티브 앱 키
+       </array>
+      </dict>
+     </array>
+     <key>LSApplicationQueriesSchemes</key>
+     <array>
+      <string>kakaokompassauth</string>
+     </array>
+     //여기까지
+
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

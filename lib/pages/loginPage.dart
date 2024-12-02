@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_walking/Controllers/authController.dart';
 import 'package:new_walking/datas.dart';
 import 'package:new_walking/pages/splashPage.dart';
 import 'package:new_walking/widgets/animations.dart';
@@ -41,14 +42,14 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(height: 32),
                     MyOpacityRisingWidget(
-                      child: Text("워킹 스쿨버스!",
+                      child: Text("워킹 스쿨버스에\n오신 것을 환영합니다.",
                           style: TextDatas.title
                       ),
                       startTime: 300,
                     ),
                     SizedBox(height: 12),
                     MyOpacityRisingWidget(
-                      child: Text("오신 것을 환영해요!\n아이들을 쉽게 관리하고,\n학부모님들과 소통할 수 있어요!",
+                      child: Text('"워킹 스쿨버스"는 워킹스쿨버스 지도자 분들을 위한 어플리케이션입니다. 온라인 공동 출석체크, 학부모, 학생 명단 관리 기능을 사용하실 수 있습니다.',
                           style: TextDatas.description
                       ),
                       startTime: 500,
@@ -57,41 +58,46 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Expanded(child: SizedBox()),
+              // MyOpacityRisingWidget(
+              //   startTime: 900,
+              //   child: Container(
+              //     width: 100,
+              //     height: 100,
+              //     decoration: BoxDecoration(
+              //       color: Colors.white,
+              //       borderRadius: DefaultDatas.borderRadius,
+              //       boxShadow: [
+              //         BoxShadow(
+              //           color: ColorDatas.shadow,
+              //           offset: Offset(0, 2),
+              //           blurRadius: 4,
+              //         )
+              //       ].toList()
+              //     ),
+              //   ),
+              // ),
+              SizedBox(height: 16),
               MyOpacityRisingWidget(
                 startTime: 900,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: DefaultDatas.borderRadius,
-                    boxShadow: [
-                      BoxShadow(
-                        color: ColorDatas.shadow,
-                        offset: Offset(0, 2),
-                        blurRadius: 4,
-                      )
-                    ].toList()
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: MyAnimatedButton(
-                  onPressed: (){},
-                  child: Center(
-                    child: Padding(
-                      padding: DefaultDatas.buttonPadding,
-                      child: Text("지금 시작하기",
-                          style: TextDatas.title.copyWith(
-                              color: ColorDatas.onPrimaryContent,
-                              fontSize: 16
-                          )
+                child: SizedBox(
+                  width: double.infinity,
+                  child: MyAnimatedButton(
+                    onPressed: (){
+                      KakaoLoginController.to.loginWithKakao();
+                    },
+                    child: Center(
+                      child: Padding(
+                        padding: DefaultDatas.buttonPadding,
+                        child: Text("지금 시작하기",
+                            style: TextDatas.title.copyWith(
+                                color: ColorDatas.onPrimaryContent,
+                                fontSize: 16
+                            )
+                        ),
                       ),
                     ),
+                    color: ColorDatas.secondary,
                   ),
-                  color: ColorDatas.secondary,
                 ),
               ),
               SizedBox(height: 8),

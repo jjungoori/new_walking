@@ -86,10 +86,12 @@ class _MyMaskRisingWidgetState extends State<MyMaskRisingWidget> with SingleTick
 class MyOpacityRisingWidget extends StatefulWidget {
   final Widget child;
   final int startTime; // 애니메이션 시작 시간 (초 단위)
+  VoidCallback? onEnd;
 
   MyOpacityRisingWidget({
     required this.child,
     required this.startTime,
+    this.onEnd
   });
 
   @override
@@ -124,7 +126,9 @@ class _MyOpacityRisingWidgetState extends State<MyOpacityRisingWidget> with Sing
 
     // 딜레이 후 애니메이션 시작
     Future.delayed(Duration(milliseconds: widget.startTime), () {
-      _controller.forward();
+      _controller.forward().then((value){
+        if(widget.onEnd != null) widget.onEnd!();
+      });
     });
   }
 
