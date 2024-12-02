@@ -1,5 +1,8 @@
 plugins {
     id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    // END: FlutterFire Configuration
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -27,6 +30,22 @@ android {
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
     ndkVersion "26.3.11579264"
+
+    signingConfigs {
+        debug {
+            keyAlias 'new_walking_key'
+            keyPassword 'dlwnsdn22'
+            storeFile file('new_walking.jks')  // 키스토어 파일 경로
+            storePassword 'dlwnsdn22'
+        }
+
+        release {
+            keyAlias 'new_walking_key'
+            keyPassword 'dlwnsdn22'
+            storeFile file('new_walking.jks')  // 키스토어 파일 경로
+            storePassword 'dlwnsdn22'
+        }
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
