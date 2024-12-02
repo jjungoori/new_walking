@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:new_walking/Controllers/authController.dart';
 import 'package:new_walking/datas.dart';
 import 'package:new_walking/pages/splashPage.dart';
@@ -81,25 +82,41 @@ class _LoginPageState extends State<LoginPage> {
                 startTime: 900,
                 child: SizedBox(
                   width: double.infinity,
-                  child: MyAnimatedButton(
-                    onPressed: (){
-                      KakaoLoginController.to.loginWithKakao();
-                    },
-                    child: Center(
-                      child: Padding(
-                        padding: DefaultDatas.buttonPadding,
-                        child: Text("지금 시작하기",
+                  child: Obx(() { // Obx로 Rx 상태를 감시
+                    return MyAnimatedButton(
+                      onPressed: KakaoLoginController.to.isLoading.value
+                          ? (){} // 로딩 중일 때 버튼 비활성화
+                          : () {
+                        KakaoLoginController.to.loginWithKakao();
+                      },
+                      child: Center(
+                        child: Padding(
+                          padding: DefaultDatas.buttonPadding,
+                          child: KakaoLoginController.to.isLoading.value
+                              ? SizedBox(
+                            height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                ColorDatas.onPrimaryContent,
+                            ),
+                          ),
+                              )
+                              : Text(
+                            "지금 시작하기",
                             style: TextDatas.title.copyWith(
-                                color: ColorDatas.onPrimaryContent,
-                                fontSize: 16
-                            )
+                              color: ColorDatas.onPrimaryContent,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    color: ColorDatas.secondary,
-                  ),
+                      color: ColorDatas.secondary,
+                    );
+                  }),
                 ),
               ),
+
               SizedBox(height: 8),
             ],
           ),
