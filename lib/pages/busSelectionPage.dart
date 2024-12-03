@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:new_walking/Controllers/authController.dart';
 import 'package:new_walking/Controllers/busDataController.dart';
 import 'package:new_walking/widgets/animations.dart';
 import 'package:new_walking/widgets/buttons.dart';
@@ -15,22 +16,25 @@ class BusSelectionPage extends StatefulWidget {
 class _BusSelectionPageState extends State<BusSelectionPage> {
   final ScrollController _scrollController = ScrollController();
   final Set<int> _alreadyDisplayed = {}; // 이미 표시된 항목의 인덱스를 추적
+  int previousBusCount = 0;
 
   @override
   void initState() {
     super.initState();
+    UserDataController.to.fetchBusesForLeader();
 
     // busData 변경 감지 및 스크롤 동작 추가
-    ever(BusDataController.to.busData, (_) {
-      if (_scrollController.hasClients) {
+    ever(UserDataController.to.buses, (_) {
+      if (_scrollController.hasClients && previousBusCount != 0) {
         Future.delayed(Duration(milliseconds: 50), () {
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
+            curve: Curves.easeOutCirc,
           );
         });
       }
+      previousBusCount = UserDataController.to.buses.length;
     });
   }
 
@@ -43,7 +47,17 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DefaultDatas.appBar,
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              KakaoLoginController.to.logout();
+              // Get.offAllNamed('/login');
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Padding(
           padding: DefaultDatas.pagePadding,
@@ -60,32 +74,41 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
               ),
               SizedBox(height: 24),
               Obx(() {
-                var count = BusDataController.to.busData.length;
+                var count = UserDataController.to.buses.length;
                 return Expanded(
-                  child: ListView.builder(
-                    controller: _scrollController, // ScrollController 연결
-                    itemCount: count + 1,
-                    itemBuilder: (context, index) {
-                      if (index < count) {
-                        // 애니메이션이 이미 실행되었는지 확인
-                        final isDisplayed = _alreadyDisplayed.contains(index);
-                        if (!isDisplayed) {
-                          _alreadyDisplayed.add(index);
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: ListView.builder(
+                      controller: _scrollController, // ScrollController 연결
+                      itemCount: count + 1,
+                      itemBuilder: (context, index) {
+                        if (index < count) {
+                          // 애니메이션이 이미 실행되었는지 확인
+                          final isDisplayed = _alreadyDisplayed.contains(index);
+                          if (!isDisplayed) {
+                            _alreadyDisplayed.add(index);
+                          }
+                          return MyOpacityRisingWidget(
+                            child: MyAnimatedBusButton(
+                              title: UserDataController.to.buses[index]["name"],
+                            ),
+                            startTime: 30,
+                          );
+                          // return MyOpacityRisingWidget(
+                          //   child: MyAnimatedBusButton(
+                          //     title: BusDataController.to.buses[index]["name"],
+                          //   ),
+                          //   startTime: isDisplayed ? 0 : index*50,
+                          // );
                         }
                         return MyOpacityRisingWidget(
-                          child: MyAnimatedBusButton(
-                            title: BusDataController.to.busData[index].name,
+                          child: MyAnimatedAddButton(
+                            only: count == 0,
                           ),
-                          startTime: isDisplayed ? 0 : index*50,
+                          startTime: 100,
                         );
-                      }
-                      return MyOpacityRisingWidget(
-                        child: MyAnimatedAddButton(
-                          only: count == 0,
-                        ),
-                        startTime: 100,
-                      );
-                    },
+                      },
+                    ),
                   ),
                 );
               })

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:new_walking/Controllers/authController.dart';
+import 'package:new_walking/Controllers/busDataController.dart';
 import 'package:rive/rive.dart';
 import 'package:flutter/services.dart';
 import 'package:new_walking/datas.dart';
@@ -25,9 +26,18 @@ class SplashPage extends StatelessWidget {
                 style: TextDatas.splashTitle,
               ),
               startTime: 2000,
-              onEnd: (){
-                if (!KakaoLoginController.to.isLoggedIn.value) {
-                  Get.toNamed('/login');
+              onEnd: () async{
+                while(KakaoLoginController.to.isLoading.value){
+                  await Future.delayed(Duration(milliseconds: 100));
+                }
+                if (KakaoLoginController.to.isLoggedIn.value) {
+                  while(UserDataController.to.isLoading.value){
+                    await Future.delayed(Duration(milliseconds: 100));
+                  }
+                  Get.offAllNamed('/busSelection');
+                }
+                else{
+                  Get.offAllNamed('/login');
                 }
               },
             ),
@@ -51,23 +61,38 @@ class MyLogoAnim extends StatefulWidget {
 
 class _MyLogoAnimState extends State<MyLogoAnim> {
   Artboard? _riveArtboard;
+  RiveFile? file;
+
+  Future<void> preload() async{
+    await rootBundle.load('assets/videos/logoAnim.riv').then(
+          (data) async {
+            file = RiveFile.import(data);
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
 
-    rootBundle.load('assets/videos/logoAnim.riv').then(
-          (data) async {
-        final file = RiveFile.import(data);
-
-        final artboard = file.mainArtboard;
+    if(file == null){
+      preload().then((value) {
+        final artboard = file!.mainArtboard;
         var controller = StateMachineController.fromArtboard(artboard, 'State Machine 1');
         if (controller != null) {
           artboard.addController(controller);
         }
         setState(() => _riveArtboard = artboard);
-        },
-    );
+      });
+    }
+    else{
+      final artboard = file!.mainArtboard;
+      var controller = StateMachineController.fromArtboard(artboard, 'State Machine 1');
+      if (controller != null) {
+        artboard.addController(controller);
+      }
+      setState(() => _riveArtboard = artboard);
+    }
   }
 
   @override

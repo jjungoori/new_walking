@@ -6,13 +6,7 @@ class DefaultDatas{
   static const EdgeInsets pagePadding = EdgeInsets.symmetric(vertical: 40, horizontal: 24);
   static const EdgeInsets noRoundPadding = EdgeInsets.symmetric(horizontal: 12);
 
-  static AppBar appBar = AppBar(
-    backgroundColor: Colors.transparent,
-    elevation: 0,
-    iconTheme: IconThemeData(
-        color: ColorDatas.onBackgroundSoft
-    ),
-  );
+  // static AppBar appBar = ;
 }
 
 class ColorDatas{

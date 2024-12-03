@@ -10,7 +10,9 @@ import 'package:new_walking/pages/splashPage.dart';
 import 'package:new_walking/pages/widgetsPage.dart';
 import 'package:new_walking/root.dart';
 import 'package:new_walking/Controllers/authController.dart';
+import 'datas.dart';
 import 'firebase_options.dart';
+import 'package:flutter/services.dart';
 
 
 void main() async{
@@ -22,9 +24,10 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  Get.put(BusDataController());
-  Get.put(KakaoLoginController());
-  print(await KakaoSdk.origin);
+  Get.put(KakaoLoginController(), permanent: true);
+  Get.put(UserDataController(), permanent: true);
+  // print(await KakaoSdk.origin);
+  rootBundle.load('assets/videos/logoAnim.riv');
   runApp(const MyApp());
 }
 
@@ -35,6 +38,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      theme: ThemeData.light().copyWith(
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: IconThemeData(color: ColorDatas.onBackgroundSoft),
+        ),
+      ),
       title: "Pull ups",
       initialRoute: '/',
       getPages: [

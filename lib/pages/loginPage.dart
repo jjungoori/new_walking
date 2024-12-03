@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:new_walking/Controllers/authController.dart';
 import 'package:new_walking/datas.dart';
@@ -17,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DefaultDatas.appBar,
+      appBar: AppBar(),
       body: SafeArea(
         child: Padding(
           padding: DefaultDatas.pagePadding,
@@ -87,7 +88,9 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: KakaoLoginController.to.isLoading.value
                           ? (){} // 로딩 중일 때 버튼 비활성화
                           : () {
-                        KakaoLoginController.to.loginWithKakao();
+                        KakaoLoginController.to.loginWithKakao().then((value){
+                          Get.offAllNamed('/busSelection');
+                        });
                       },
                       child: Center(
                         child: Padding(

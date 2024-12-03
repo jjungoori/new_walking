@@ -323,7 +323,11 @@ class MyAnimatedAddButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return MyAnimatedButton(
       onPressed: (){
-        BusDataController.to.addBusData(MyBusData(name: "Capybara"));
+        // Get.bottomSheet(
+        //
+        // );
+        UserDataController.to.createBus("busName", "busDescription");
+        // BusDataController.to.addBusData(MyBusData(name: "Capybara"));
       },
       child: Padding(
         padding: DefaultDatas.buttonPadding,
