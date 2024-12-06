@@ -9,6 +9,11 @@ import 'package:new_walking/widgets/textFields.dart';
 
 import '../datas.dart';
 
+Future<void> initBusData() async {
+  await UserDataController.to.checkIfNewUserAndInit();
+  UserDataController.to.fetchBusesForLeader();
+}
+
 class BusSelectionPage extends StatefulWidget {
   const BusSelectionPage({super.key});
 
@@ -23,7 +28,8 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
   @override
   void initState() {
     super.initState();
-    UserDataController.to.fetchBusesForLeader();
+
+    initBusData();
 
     // busData 변경 감지 및 스크롤 동작 추가
     ever(UserDataController.to.expectedBusCount, (_) {
@@ -78,6 +84,8 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
               Obx(() {
                 var count = UserDataController.to.expectedBusCount.value;
                 var busCount = UserDataController.to.buses.length;
+
+                print(UserDataController.to.buses[0]);
 
                 if(UserDataController.to.isLoading.value && count == 0){
                   return Expanded(

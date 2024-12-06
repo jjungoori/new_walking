@@ -105,12 +105,11 @@ class UserDataController extends GetxController {
     }
   }
 
-  //init function of this controller
   Future<void> fetchBusesForLeader() async {
     try {
+      print("sync start");
       isLoading(true); // Start loading
 
-      // Get the currently logged-in user's UID
       User? user = KakaoLoginController.to.user;
       if (user == null) {
         Get.snackbar("Error", "No logged-in user found");
@@ -118,9 +117,6 @@ class UserDataController extends GetxController {
       }
       String leaderUid = user.uid;
 
-      await checkIfNewUserAndInit();
-
-      // Get the leader's document
       DocumentSnapshot leaderDoc = await _firestore.collection('leaders').doc(leaderUid).get();
 
       if (!leaderDoc.exists) {
@@ -128,40 +124,28 @@ class UserDataController extends GetxController {
         return;
       }
 
-      // Extract bus IDs from the leader document
-      List<dynamic> busIds = leaderDoc.get('buses') ?? [];
+      List<dynamic> busesList = leaderDoc.get('buses') ?? [];
 
-      // If there are no buses, return
-      if (busIds.isEmpty) {
-        // Get.snackbar("Info", "No buses found for this leader.");
-        return;
+      // Sort buses by 'index' to maintain the order
+      busesList.sort((a, b) => (a['index'] as int).compareTo(b['index'] as int));
+
+      var busDatas = [];
+      for (var bus in busesList) {
+        DocumentSnapshot busDoc = await _firestore.collection('buses').doc(bus['id']).get();
+        busDatas.add(busDoc.data());
       }
 
-      // Fetch buses in chunks (Firestore has a limit of 10 IDs per query)
-      const chunkSize = 10;
-      List<Map<String, dynamic>> allBuses = [];
-
-      // Break the busIds into chunks and fetch each chunk
-      for (int i = 0; i < busIds.length; i += chunkSize) {
-        List<dynamic> chunk = busIds.sublist(i, i + chunkSize > busIds.length ? busIds.length : i + chunkSize);
-
-        QuerySnapshot busSnapshot = await _firestore
-            .collection('buses')
-            .where(FieldPath.documentId, whereIn: chunk)
-            .get();
-
-        allBuses.addAll(busSnapshot.docs.map((doc) => {'id': doc.id, ...doc.data() as Map<String, dynamic>}).toList());
-      }
-
-      // Update the buses list with all the fetched buses
-      buses.assignAll(allBuses);
-      expectedBusCount.value = allBuses.length;
+      buses.assignAll(busDatas);
+      expectedBusCount.value = busesList.length;
+      print("synced");
     } catch (e) {
       Get.snackbar("Error-FetchBuses", e.toString());
     } finally {
       isLoading(false); // Stop loading
     }
   }
+
+
 
 
   // Select a specific bus and fetch its details
@@ -184,7 +168,6 @@ class UserDataController extends GetxController {
       isLoading(false); // Stop loading
     }
   }
-
   Future<void> addBus(String busId) async {
     print("addBus");
     try {
@@ -198,26 +181,35 @@ class UserDataController extends GetxController {
       }
       String leaderUid = user.uid;
 
-      expectedBusCount.value = buses.length + 1;
-      print("expectedBusCount: ${expectedBusCount.value}");
-
-      // Update the leader's buses field by adding the new bus ID
+      // Get the current buses array to determine the next index
+      expectedBusCount.value += 1;
       DocumentReference leaderRef = _firestore.collection('leaders').doc(leaderUid);
+      DocumentSnapshot leaderDoc = await leaderRef.get();
+      List<dynamic> currentBuses = leaderDoc.get('buses') ?? [];
+      int nextIndex = currentBuses.length;
+
+      // Add bus with index
+      Map<String, dynamic> newBus = {
+        'id': busId,
+        'index': nextIndex,
+        // 'timestamp': FieldValue.serverTimestamp(),
+      };
 
       await leaderRef.update({
-        'buses': FieldValue.arrayUnion([busId]),
+        'buses': FieldValue.arrayUnion([newBus]), // Add bus with index
       });
 
       // Fetch updated bus list
       fetchBusesForLeader();
 
-      // Get.snackbar("Success", "Bus added successfully!");
     } catch (e) {
       Get.snackbar("Error", e.toString());
     } finally {
       isLoading(false); // Stop loading
     }
   }
+
+
 
   Future<void> createBus(String busName, String busDescription) async {
     try {
