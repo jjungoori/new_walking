@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
-import 'package:new_walking/Controllers/busDataController.dart';
 
 class KakaoLoginController extends GetxController {
   static KakaoLoginController get to => Get.find();
@@ -18,10 +17,10 @@ class KakaoLoginController extends GetxController {
     _checkLoginStatusAndInit(); // 앱 실행 시 로그인 상태 확인
   }
 
-  Future<void> _initUser() async{
-    await UserDataController.to.checkIfNewUserAndInit();
-    return;
-  }
+  // Future<void> _initUser() async{
+  //   await UserDataController.to.checkIfNewUserAndInit();
+  //   return;
+  // }
 
   Future<void> _checkLoginStatusAndInit() async {
     print("로그인 상태 확인 중...");
@@ -34,7 +33,7 @@ class KakaoLoginController extends GetxController {
       if (user != null) {
         print("로그인된 사용자: ${user.email ?? user.displayName}");
         isLoggedIn.value = true;
-        await _initUser();
+        // await _initUser();
       } else {
         isLoggedIn.value = false;
       }
@@ -63,7 +62,7 @@ class KakaoLoginController extends GetxController {
 
       // Firebase에 사용자 로그인
       await auth.FirebaseAuth.instance.signInWithCredential(credential);
-      await _initUser();
+      // await _initUser();
       // 로그인 성공 시 홈 화면으로 이동
     } catch (error) {
       // 에러 처리

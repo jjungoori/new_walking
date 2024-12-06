@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class DefaultDatas{
   static const BorderRadius borderRadius = BorderRadius.all(Radius.circular(16));
   static const EdgeInsets buttonPadding = EdgeInsets.all(12);
+  static const EdgeInsets modalPadding = EdgeInsets.all(20);
   static const EdgeInsets pagePadding = EdgeInsets.symmetric(vertical: 40, horizontal: 24);
   static const EdgeInsets noRoundPadding = EdgeInsets.symmetric(horizontal: 12);
 
@@ -20,7 +21,7 @@ class ColorDatas{
   static const Color onBackground = Color(0xFF111111);
   static const Color onBackgroundSoft = Color(0xFF767676);
   static Color splashColor = Colors.white.withOpacity(0.5);
-  static Color shadow = Colors.black.withOpacity(0.04);
+  static Color shadow = Colors.black.withOpacity(0.1);
   static const Color error = Color(0xFFdd0000);
   static const Color onError = Color(0xFF660000);
 

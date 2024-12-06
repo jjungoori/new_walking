@@ -221,26 +221,31 @@ class _MyAnimatedButtonState extends State<MyAnimatedButton>
         builder: (context, child) {
           return Transform.scale(
             scale: !reverse ? _scaleDownAnimation.value : _scaleUpAnimation.value,
-            child: ClipRRect(
-              borderRadius: DefaultDatas.borderRadius,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: widget.onPressed,
-                  onTapDown: _onTapDown,
-                  onTapUp: (details) => _onTapUp(),
-                  onTapCancel: _onTapCancel,
-                  borderRadius: DefaultDatas.borderRadius,
-                  splashColor: ColorDatas.splashColor,
-                  child: Ink(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: widget.color,
-                      gradient: widget.gradient,
-                      borderRadius: DefaultDatas.borderRadius,
-                      boxShadow: widget.shadows,
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: widget.shadows,
+                borderRadius: DefaultDatas.borderRadius
+              ),
+              child: ClipRRect(
+                borderRadius: DefaultDatas.borderRadius,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: widget.onPressed,
+                    onTapDown: _onTapDown,
+                    onTapUp: (details) => _onTapUp(),
+                    onTapCancel: _onTapCancel,
+                    borderRadius: DefaultDatas.borderRadius,
+                    splashColor: ColorDatas.splashColor,
+                    child: Ink(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: widget.color,
+                        gradient: widget.gradient,
+                        borderRadius: DefaultDatas.borderRadius,
+                      ),
+                      child: widget.child,
                     ),
-                    child: widget.child,
                   ),
                 ),
               ),
@@ -261,19 +266,17 @@ class _MyAnimatedButtonState extends State<MyAnimatedButton>
 
 class MyAnimatedSquareButton extends StatelessWidget {
   Color color;
-  String title;
-  String description;
+  Widget title;
+  Widget description;
   List<BoxShadow>? shadows;
-  Color titleColor;
-  Color descriptionColor;
+  VoidCallback onPressed;
 
   MyAnimatedSquareButton({
     super.key,
     required this.title,
     required this.description,
     required this.color,
-    required this.titleColor,
-    required this.descriptionColor,
+    required this.onPressed,
     this.shadows
   });
 
@@ -282,24 +285,14 @@ class MyAnimatedSquareButton extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 1,
       child: MyAnimatedButton(
-        onPressed: (){},
+        onPressed: onPressed,
         child: Padding(
           padding: DefaultDatas.buttonPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title,
-                  style: TextDatas.title.copyWith(
-                      color: titleColor,
-                      fontSize: 24
-                  )
-              ),
-              Text(description,
-                  style: TextDatas.description.copyWith(
-                      color: descriptionColor,
-                      fontSize: 16
-                  )
-              ),
+              title,
+              description
             ],
           ),
         ),
@@ -310,94 +303,3 @@ class MyAnimatedSquareButton extends StatelessWidget {
   }
 }
 
-class MyAnimatedAddButton extends StatelessWidget {
-
-  final bool only;
-
-  MyAnimatedAddButton({
-    super.key,
-    this.only = false
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return MyAnimatedButton(
-      onPressed: (){
-        // Get.bottomSheet(
-        //
-        // );
-        UserDataController.to.createBus("busName", "busDescription");
-        // BusDataController.to.addBusData(MyBusData(name: "Capybara"));
-      },
-      child: Padding(
-        padding: DefaultDatas.buttonPadding,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              child: Image.asset("assets/images/plusIcon.png",
-                color: only ? ColorDatas.onPrimaryTitle : ColorDatas.onBackgroundSoft,
-              ),
-              width: 24,
-              height: 24,
-            ),
-            SizedBox(width: 18,),
-            Text("버스 추가하기",
-                style: TextDatas.description.copyWith(
-                    color: only ? ColorDatas.onPrimaryTitle : ColorDatas.onBackgroundSoft,
-                )
-            )
-          ],
-        ),
-      ),
-      color: only ? ColorDatas.secondary : Colors.transparent,
-    );
-  }
-}
-
-
-class MyAnimatedBusButton extends StatelessWidget {
-  String title;
-  MyAnimatedBusButton({
-    super.key,
-    required this.title
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8),
-      child: MyAnimatedButton(
-        onPressed: (){},
-        child: Padding(
-          padding: DefaultDatas.buttonPadding,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // SizedBox(
-              //   child: Image.asset("assets/images/plusIcon.png"),
-              //   width: 24,
-              //   height: 24,
-              // ),
-              // SizedBox(width: 18,),
-              Text(title,
-                  style: TextDatas.description.copyWith(
-                      color: ColorDatas.onPrimaryTitle,
-                  )
-              )
-            ],
-          ),
-        ),
-        color: Colors.white,
-        gradient: LinearGradient(
-          colors: [
-            ColorDatas.primary,
-            ColorDatas.secondary
-          ],
-          end: Alignment.topLeft,
-          begin: Alignment.bottomRight
-        ),
-      ),
-    );
-  }
-}

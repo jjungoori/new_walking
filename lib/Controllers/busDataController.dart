@@ -39,6 +39,8 @@ class UserDataController extends GetxController {
   var selectedBus = {}.obs; // Selected bus details
   var isLoading = false.obs; // Loading indicator
 
+  var expectedBusCount = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -103,6 +105,7 @@ class UserDataController extends GetxController {
     }
   }
 
+  //init function of this controller
   Future<void> fetchBusesForLeader() async {
     try {
       isLoading(true); // Start loading
@@ -114,6 +117,8 @@ class UserDataController extends GetxController {
         return;
       }
       String leaderUid = user.uid;
+
+      await checkIfNewUserAndInit();
 
       // Get the leader's document
       DocumentSnapshot leaderDoc = await _firestore.collection('leaders').doc(leaderUid).get();
@@ -150,6 +155,7 @@ class UserDataController extends GetxController {
 
       // Update the buses list with all the fetched buses
       buses.assignAll(allBuses);
+      expectedBusCount.value = allBuses.length;
     } catch (e) {
       Get.snackbar("Error-FetchBuses", e.toString());
     } finally {
@@ -180,6 +186,7 @@ class UserDataController extends GetxController {
   }
 
   Future<void> addBus(String busId) async {
+    print("addBus");
     try {
       isLoading(true); // Start loading
 
@@ -190,6 +197,9 @@ class UserDataController extends GetxController {
         return;
       }
       String leaderUid = user.uid;
+
+      expectedBusCount.value = buses.length + 1;
+      print("expectedBusCount: ${expectedBusCount.value}");
 
       // Update the leader's buses field by adding the new bus ID
       DocumentReference leaderRef = _firestore.collection('leaders').doc(leaderUid);
@@ -229,15 +239,7 @@ class UserDataController extends GetxController {
         'ownerId': leaderUid,
       });
 
-      // Update the leader's buses field by adding the new bus ID
-      DocumentReference leaderRef = _firestore.collection('leaders').doc(leaderUid);
-
-      await leaderRef.update({
-        'buses': FieldValue.arrayUnion([newBusRef.id]),
-      });
-
-      // Fetch updated bus list
-      fetchBusesForLeader();
+      addBus(newBusRef.id);
 
       // Get.snackbar("Success", "Bus added successfully!");
     } catch (e) {
