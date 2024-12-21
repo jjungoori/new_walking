@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'package:new_walking/Controllers/busDataController.dart';
+import 'package:new_walking/Controllers/userDataController.dart';
 import 'package:new_walking/pages/busSelectionPage.dart';
 import 'package:new_walking/pages/homePage.dart';
 import 'package:new_walking/pages/loginPage.dart';
@@ -10,6 +10,7 @@ import 'package:new_walking/pages/splashPage.dart';
 import 'package:new_walking/pages/widgetsPage.dart';
 import 'package:new_walking/root.dart';
 import 'package:new_walking/Controllers/authController.dart';
+import 'package:rive/rive.dart';
 import 'datas.dart';
 import 'firebase_options.dart';
 import 'package:flutter/services.dart';
@@ -24,8 +25,10 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  Get.put(KakaoLoginController(), permanent: true);
+  Get.put(AuthService());
+  Get.put(AuthViewModel(), permanent: true);
   Get.put(UserDataController(), permanent: true);
+  // await RiveFile.initialize();
   // print(await KakaoSdk.origin);
   rootBundle.load('assets/videos/logoAnim.riv');
   runApp(const MyApp());

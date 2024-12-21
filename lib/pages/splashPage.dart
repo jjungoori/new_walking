@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:new_walking/Controllers/authController.dart';
-import 'package:new_walking/Controllers/busDataController.dart';
+import 'package:new_walking/Controllers/userDataController.dart';
 import 'package:rive/rive.dart';
 import 'package:flutter/services.dart';
 import 'package:new_walking/datas.dart';
@@ -27,10 +27,10 @@ class SplashPage extends StatelessWidget {
               ),
               startTime: 2000,
               onEnd: () async{
-                while(KakaoLoginController.to.isLoading.value){
+                while(AuthViewModel.to.isLoading.value){
                   await Future.delayed(Duration(milliseconds: 100));
                 }
-                if (KakaoLoginController.to.isLoggedIn.value) {
+                if (AuthViewModel.to.isLoggedIn.value) {
                   while(UserDataController.to.isLoading.value){
                     await Future.delayed(Duration(milliseconds: 100));
                   }

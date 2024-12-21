@@ -82,10 +82,10 @@ class _MyTextFieldState extends State<MyTextField>
                         ? Icon(widget.prefixIcon, color: Colors.grey[600])
                         : null,
                     filled: true,
-                    fillColor: ColorDatas.onBackgroundSoft.withOpacity(Tween(
-                      begin: 0.03,
-                      end: 0.1,
-                    ).animate(_animation).value),
+                    fillColor: ColorTween(
+                      begin: ColorDatas.onBackgroundSoft.withOpacity(0.05),
+                      end: ColorDatas.primary.withOpacity(0.05),
+                    ).transform(_animation.value),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16.0,
                       vertical: 22.0,

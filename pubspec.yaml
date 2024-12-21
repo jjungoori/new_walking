@@ -40,8 +40,7 @@ dependencies:
   rive:
   firebase_core:
   firebase_auth:
-  cloud_firestore: ^4.14.0
-
+  cloud_firestore:
   kakao_flutter_sdk_user: ^1.9.2
 
 dev_dependencies:

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:new_walking/Controllers/busDataController.dart';
+import 'package:new_walking/Controllers/userDataController.dart';
 
 import '../datas.dart';
 

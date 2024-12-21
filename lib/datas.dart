@@ -5,7 +5,7 @@ class DefaultDatas{
   static const EdgeInsets buttonPadding = EdgeInsets.all(12);
   static const EdgeInsets modalPadding = EdgeInsets.all(20);
   static const EdgeInsets pagePadding = EdgeInsets.symmetric(vertical: 40, horizontal: 24);
-  static const EdgeInsets noRoundPadding = EdgeInsets.symmetric(horizontal: 12);
+  static const EdgeInsets noRoundPadding = EdgeInsets.symmetric(horizontal: 8);
 
   // static AppBar appBar = ;
 }
@@ -18,6 +18,8 @@ class ColorDatas{
   static const Color onPrimaryDescription = Color.fromARGB(240,240,240,255);
 
   static const Color background = Color(0xFFf9f9f9);
+  static const Color backgroundSoft = Color(0xFFf0f0f0);
+
   static const Color onBackground = Color(0xFF111111);
   static const Color onBackgroundSoft = Color(0xFF767676);
   static Color splashColor = Colors.white.withOpacity(0.5);

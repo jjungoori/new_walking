@@ -85,17 +85,17 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   child: Obx(() { // Obx로 Rx 상태를 감시
                     return MyAnimatedButton(
-                      onPressed: KakaoLoginController.to.isLoading.value
+                      onPressed: AuthViewModel.to.isLoading.value
                           ? (){} // 로딩 중일 때 버튼 비활성화
                           : () {
-                        KakaoLoginController.to.loginWithKakao().then((value){
+                        AuthViewModel.to.loginWithKakao().then((value){
                           Get.offAllNamed('/busSelection');
                         });
                       },
                       child: Center(
                         child: Padding(
                           padding: DefaultDatas.buttonPadding,
-                          child: KakaoLoginController.to.isLoading.value
+                          child: AuthViewModel.to.isLoading.value
                               ? SizedBox(
                             height: 20,
                                 width: 20,

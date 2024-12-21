@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:new_walking/Controllers/authController.dart';
-import 'package:new_walking/Controllers/busDataController.dart';
+import 'package:new_walking/Controllers/userDataController.dart';
 import 'package:new_walking/utils.dart';
+import 'package:new_walking/widgets/alerts.dart';
 import 'package:new_walking/widgets/animations.dart';
 import 'package:new_walking/widgets/buttons.dart';
 import 'package:new_walking/widgets/textFields.dart';
@@ -22,8 +25,9 @@ class BusSelectionPage extends StatefulWidget {
 }
 class _BusSelectionPageState extends State<BusSelectionPage> {
   final ScrollController _scrollController = ScrollController();
-  final Set<int> _alreadyDisplayed = {}; // 이미 표시된 항목의 인덱스를 추적
+  // final Set<int> _alreadyDisplayed = {}; // 이미 표시된 항목의 인덱스를 추적
   int previousBusCount = 0;
+  bool busesCanLoad = false;
 
   @override
   void initState() {
@@ -44,6 +48,10 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
       }
       previousBusCount = UserDataController.to.buses.length;
     });
+
+    Future.delayed(Duration(milliseconds: 200), (){
+      busesCanLoad = true;
+    });
   }
 
   @override
@@ -58,9 +66,21 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: () {
-              KakaoLoginController.to.logout();
-              // Get.offAllNamed('/login');
+            onPressed: () async {
+              showDialog(context: context, builder: (_){
+                return MyAlertDialog(
+                    title: "로그아웃",
+                    content: "정말 로그아웃 하시겠습니까?",
+                    onConfirm: () async{
+                      if(await AuthViewModel.to.logout()){
+                        Get.offAllNamed("/login");
+                      }
+                    },
+                    onCancel: (){
+                      Navigator.pop(context);
+                    }
+                );
+              });
             },
             icon: const Icon(Icons.logout),
           ),
@@ -85,9 +105,9 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
                 var count = UserDataController.to.expectedBusCount.value;
                 var busCount = UserDataController.to.buses.length;
 
-                print(UserDataController.to.buses[0]);
+                // print(UserDataController.to.buses[0]);
 
-                if(UserDataController.to.isLoading.value && count == 0){
+                if((UserDataController.to.isLoading.value && count == 0) || !busesCanLoad){
                   return Expanded(
                     child: Center(
                       child: CircularProgressIndicator(
@@ -112,10 +132,10 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
                             );
                           }
                           // 애니메이션이 이미 실행되었는지 확인
-                          final isDisplayed = _alreadyDisplayed.contains(index);
-                          if (!isDisplayed) {
-                            _alreadyDisplayed.add(index);
-                          }
+                          // final isDisplayed = _alreadyDisplayed.contains(index);
+                          // if (!isDisplayed) {
+                          //   _alreadyDisplayed.add(index);
+                          // }
                           return MyOpacityRisingWidget(
                             child: MyAnimatedBusButton(
                               title: UserDataController.to.buses[index]["name"],
@@ -252,6 +272,8 @@ class MyAnimatedAddButton extends StatelessWidget {
     this.only = false
   });
 
+  final minSize = 140.0;
+
   @override
   Widget build(BuildContext context) {
     return MyAnimatedButton(
@@ -267,109 +289,112 @@ class MyAnimatedAddButton extends StatelessWidget {
             //   style: TextDatas.title,
             // ),
             // SizedBox(height: 22,),
-            Row(
-              children: [
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    return SizedBox(
-                      width: constraints.maxWidth < 160 ? constraints.maxWidth : 160,
-                      height: constraints.maxWidth < 160 ? constraints.maxWidth : 160,
-                      child: AspectRatio(
-                          aspectRatio: 1, // 1:1 비율 유지
-                          child: MyAnimatedSquareButton(
-                            color: ColorDatas.background,
-                            shadows: [
-                              BoxShadow(
-                                color: ColorDatas.shadow,
-                                offset: Offset(0, 0),
-                                blurRadius: 16,
-                              )
-                            ],
-                            title: Text("내가 만들기",
-                                style: TextDatas.subtitle
-                            ),
-                            description: SizedBox(),
-                            onPressed: (){
-                              // UserDataController.to.createBus("busName", "busDescription");
-                              Navigator.pop(context);
-                              myShowModalBottomSheet(context,
-                                Builder(
-                                  builder: (context) {
-                                    TextEditingController busNameController = TextEditingController();
-                                    TextEditingController busDescriptionController = TextEditingController();
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        MyTextField(
-                                          hintText: "버스 이름",
-                                          controller: busNameController,
-                                        ),
-                                        SizedBox(height: 8,),
-                                        MyTextField(
-                                          hintText: "버스 설명",
-                                          controller: busDescriptionController,
-                                        ),
-                                        SizedBox(height: 16,),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          height: 70,
-                                          child: MyAnimatedButton(
-                                              onPressed: (){
-                                                UserDataController.to.createBus(
-                                                  busNameController.text,
-                                                  busDescriptionController.text
-                                                );
-                                                Navigator.pop(context);
-                                              },
-                                              child: Center(
-                                                child: Text("버스 만들기!",
-                                                  style: TextDatas.description.copyWith(
-                                                    color: ColorDatas.onPrimaryTitle,
+            AspectRatio(
+              aspectRatio: 1.5,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SizedBox(
+                        width: max(constraints.maxHeight*0.7, minSize),
+                        // height: constraints.maxWidth < minSize ? constraints.maxWidth : minSize,
+                        child: AspectRatio(
+                            aspectRatio: 1, // 1:1 비율 유지
+                            child: MyAnimatedSquareButton(
+                              color: ColorDatas.background,
+                              shadows: [
+                                BoxShadow(
+                                  color: ColorDatas.shadow,
+                                  offset: Offset(0, 0),
+                                  blurRadius: 16,
+                                )
+                              ],
+                              title: Text("내가 만들기",
+                                  style: TextDatas.subtitle
+                              ),
+                              description: SizedBox(),
+                              onPressed: (){
+                                // UserDataController.to.createBus("busName", "busDescription");
+                                Navigator.pop(context);
+                                myShowModalBottomSheet(context,
+                                  Builder(
+                                    builder: (context) {
+                                      TextEditingController busNameController = TextEditingController();
+                                      TextEditingController busDescriptionController = TextEditingController();
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          MyTextField(
+                                            hintText: "버스 이름",
+                                            controller: busNameController,
+                                          ),
+                                          SizedBox(height: 8,),
+                                          MyTextField(
+                                            hintText: "버스 설명",
+                                            controller: busDescriptionController,
+                                          ),
+                                          SizedBox(height: 16,),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            height: 70,
+                                            child: MyAnimatedButton(
+                                                onPressed: (){
+                                                  UserDataController.to.createBus(
+                                                    busNameController.text,
+                                                    busDescriptionController.text
+                                                  );
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Center(
+                                                  child: Text("버스 만들기!",
+                                                    style: TextDatas.description.copyWith(
+                                                      color: ColorDatas.onPrimaryTitle,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              color: ColorDatas.secondary,
+                                                color: ColorDatas.secondary,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    );
-                                  }
+                                        ],
+                                      );
+                                    }
+                                  )
+                                );
+                              },
+                            )
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(width: 16,),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SizedBox(
+                        width: max(constraints.maxHeight*0.7, minSize),
+                        child: AspectRatio(
+                            aspectRatio: 1, // 1:1 비율 유지
+                            child: MyAnimatedSquareButton(
+                              color: ColorDatas.background,
+                              shadows: [
+                                BoxShadow(
+                                  color: ColorDatas.shadow,
+                                  offset: Offset(0, 0),
+                                  blurRadius: 16,
                                 )
-                              );
-                            },
-                          )
-                      ),
-                    );
-                  },
-                ),
-                Expanded(child: SizedBox()),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    return SizedBox(
-                      width: constraints.maxWidth < 160 ? constraints.maxWidth : 160,
-                      height: constraints.maxWidth < 160 ? constraints.maxWidth : 160,
-                      child: AspectRatio(
-                          aspectRatio: 1, // 1:1 비율 유지
-                          child: MyAnimatedSquareButton(
-                            color: ColorDatas.background,
-                            shadows: [
-                              BoxShadow(
-                                color: ColorDatas.shadow,
-                                offset: Offset(0, 0),
-                                blurRadius: 16,
-                              )
-                            ],
-                            title: Text("참여하기",
-                              style: TextDatas.subtitle,
-                            ),
-                            description: SizedBox(),
-                            onPressed: (){},
-                          )
-                      ),
-                    );
-                  },
-                ),
-              ],
+                              ],
+                              title: Text("참여하기",
+                                style: TextDatas.subtitle,
+                              ),
+                              description: SizedBox(),
+                              onPressed: (){},
+                            )
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             )
           ],
         ),);

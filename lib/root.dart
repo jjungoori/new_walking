@@ -18,6 +18,7 @@ class RootPage extends StatelessWidget {
               MyRootButton(root: "/splash",),
               MyRootButton(root: "/busSelection",),
               MyRootButton(root: "/login",),
+              // MyRootButton(root: "/accountDeletion",),
             ],
           ),
         ),

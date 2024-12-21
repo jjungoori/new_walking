@@ -52,7 +52,7 @@ class UserDataController extends GetxController {
       isLoading(true); // Start loading
 
       // Get the currently logged-in user's UID
-      User? user = KakaoLoginController.to.user;
+      User? user = AuthViewModel.to.currentUser.value;
       if (user == null) {
         Get.snackbar("Error", "No logged-in user found");
         return;
@@ -83,7 +83,7 @@ class UserDataController extends GetxController {
       isLoading(true); // Start loading
 
       // Get the currently logged-in user's UID
-      User? user = KakaoLoginController.to.user;
+      User? user = AuthViewModel.to.currentUser.value;
       if (user == null) {
         Get.snackbar("Error", "No logged-in user found");
         return;
@@ -110,7 +110,7 @@ class UserDataController extends GetxController {
       print("sync start");
       isLoading(true); // Start loading
 
-      User? user = KakaoLoginController.to.user;
+      User? user = AuthViewModel.to.currentUser.value;
       if (user == null) {
         Get.snackbar("Error", "No logged-in user found");
         return;
@@ -174,7 +174,7 @@ class UserDataController extends GetxController {
       isLoading(true); // Start loading
 
       // Get the currently logged-in user's UID
-      User? user = KakaoLoginController.to.user;
+      User? user = AuthViewModel.to.currentUser.value;
       if (user == null) {
         Get.snackbar("Error", "No logged-in user found");
         return;
@@ -216,7 +216,7 @@ class UserDataController extends GetxController {
       isLoading(true); // Start loading
 
       // Get the currently logged-in user's UID
-      User? user = KakaoLoginController.to.user;
+      User? user = AuthViewModel.to.currentUser.value;
       if (user == null) {
         Get.snackbar("Error", "No logged-in user found");
         return;
