@@ -9,6 +9,8 @@ import 'package:new_walking/widgets/animations.dart';
 import '../datas.dart';
 import 'package:get/get.dart';
 
+import '../widgets/riveAnim.dart';
+
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
 
@@ -31,7 +33,7 @@ class SplashPage extends StatelessWidget {
                   await Future.delayed(Duration(milliseconds: 100));
                 }
                 if (AuthViewModel.to.isLoggedIn.value) {
-                  while(UserDataController.to.isLoading.value){
+                  while(CurrentUserDataViewModel.to.isLoading.value){
                     await Future.delayed(Duration(milliseconds: 100));
                   }
                   Get.offAllNamed('/busSelection');
@@ -51,62 +53,3 @@ class SplashPage extends StatelessWidget {
     );
   }
 }
-
-class MyLogoAnim extends StatefulWidget {
-  const MyLogoAnim({super.key});
-
-  @override
-  State<MyLogoAnim> createState() => _MyLogoAnimState();
-}
-
-class _MyLogoAnimState extends State<MyLogoAnim> {
-  Artboard? _riveArtboard;
-  RiveFile? file;
-
-  Future<void> preload() async{
-    await rootBundle.load('assets/videos/logoAnim.riv').then(
-          (data) async {
-            file = RiveFile.import(data);
-      },
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    if(file == null){
-      preload().then((value) {
-        final artboard = file!.mainArtboard;
-        var controller = StateMachineController.fromArtboard(artboard, 'State Machine 1');
-        if (controller != null) {
-          artboard.addController(controller);
-        }
-        setState(() => _riveArtboard = artboard);
-      });
-    }
-    else{
-      final artboard = file!.mainArtboard;
-      var controller = StateMachineController.fromArtboard(artboard, 'State Machine 1');
-      if (controller != null) {
-        artboard.addController(controller);
-      }
-      setState(() => _riveArtboard = artboard);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 250,
-      height: 250,
-      child: _riveArtboard == null
-          ? const SizedBox() // 로딩 중 상태를 보여줌
-          : Rive(
-        artboard: _riveArtboard!,
-      ),
-    );
-  }
-}
-
-

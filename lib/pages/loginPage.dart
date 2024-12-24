@@ -7,6 +7,8 @@ import 'package:new_walking/pages/splashPage.dart';
 import 'package:new_walking/widgets/animations.dart';
 import 'package:new_walking/widgets/buttons.dart';
 
+import '../widgets/riveAnim.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 

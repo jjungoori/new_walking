@@ -84,9 +84,9 @@ class _MyMaskRisingWidgetState extends State<MyMaskRisingWidget> with SingleTick
 
 
 class MyOpacityRisingWidget extends StatefulWidget {
-  final Widget child;
   final int startTime; // 애니메이션 시작 시간 (초 단위)
   VoidCallback? onEnd;
+  final Widget child;
 
   MyOpacityRisingWidget({
     required this.child,

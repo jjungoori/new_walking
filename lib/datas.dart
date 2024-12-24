@@ -4,7 +4,7 @@ class DefaultDatas{
   static const BorderRadius borderRadius = BorderRadius.all(Radius.circular(16));
   static const EdgeInsets buttonPadding = EdgeInsets.all(12);
   static const EdgeInsets modalPadding = EdgeInsets.all(20);
-  static const EdgeInsets pagePadding = EdgeInsets.symmetric(vertical: 40, horizontal: 24);
+  static const EdgeInsets pagePadding = EdgeInsets.symmetric(vertical: 20, horizontal: 18);
   static const EdgeInsets noRoundPadding = EdgeInsets.symmetric(horizontal: 8);
 
   // static AppBar appBar = ;
@@ -66,6 +66,13 @@ class TextDatas{
       fontSize: 20,
       fontWeight: FontWeight.w300,
       color: ColorDatas.onPrimaryTitle
+  );
+
+  static const TextStyle homeButton = TextStyle(
+      fontFamily: 'Pretendard',
+      fontSize: 18,
+      fontWeight: FontWeight.w300,
+      color: ColorDatas.onBackgroundSoft
   );
 
   static const TextStyle importantText = TextStyle(

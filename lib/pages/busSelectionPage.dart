@@ -10,11 +10,12 @@ import 'package:new_walking/widgets/animations.dart';
 import 'package:new_walking/widgets/buttons.dart';
 import 'package:new_walking/widgets/textFields.dart';
 
+import '../Controllers/busDataController.dart';
 import '../datas.dart';
 
 Future<void> initBusData() async {
-  await UserDataController.to.checkIfNewUserAndInit();
-  UserDataController.to.fetchBusesForLeader();
+  await CurrentUserDataViewModel.to.checkIfNewUserAndInit();
+  CurrentUserDataViewModel.to.fetchBusesForLeader();
 }
 
 class BusSelectionPage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
   final ScrollController _scrollController = ScrollController();
   // final Set<int> _alreadyDisplayed = {}; // 이미 표시된 항목의 인덱스를 추적
   int previousBusCount = 0;
-  bool busesCanLoad = false;
+  var busesCanLoad = false.obs;
 
   @override
   void initState() {
@@ -36,7 +37,7 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
     initBusData();
 
     // busData 변경 감지 및 스크롤 동작 추가
-    ever(UserDataController.to.expectedBusCount, (_) {
+    ever(CurrentUserDataViewModel.to.expectedBusCount, (_) {
       if (_scrollController.hasClients && previousBusCount != 0) {
         Future.delayed(Duration(milliseconds: 50), () {
           _scrollController.animateTo(
@@ -46,11 +47,11 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
           );
         });
       }
-      previousBusCount = UserDataController.to.buses.length;
+      previousBusCount = CurrentUserDataViewModel.to.buses.length;
     });
 
     Future.delayed(Duration(milliseconds: 200), (){
-      busesCanLoad = true;
+      busesCanLoad.value = true;
     });
   }
 
@@ -102,12 +103,12 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
               ),
               SizedBox(height: 24),
               Obx(() {
-                var count = UserDataController.to.expectedBusCount.value;
-                var busCount = UserDataController.to.buses.length;
+                var count = CurrentUserDataViewModel.to.expectedBusCount.value;
+                var busCount = CurrentUserDataViewModel.to.buses.length;
 
                 // print(UserDataController.to.buses[0]);
 
-                if((UserDataController.to.isLoading.value && count == 0) || !busesCanLoad){
+                if((CurrentUserDataViewModel.to.isLoading.value && count == 0) || !busesCanLoad.value){
                   return Expanded(
                     child: Center(
                       child: CircularProgressIndicator(
@@ -137,10 +138,17 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
                           //   _alreadyDisplayed.add(index);
                           // }
                           return MyOpacityRisingWidget(
-                            child: MyAnimatedBusButton(
-                              title: UserDataController.to.buses[index]["name"],
-                            ),
                             startTime: 30,
+                            child: MyAnimatedBusButton(
+                              title: CurrentUserDataViewModel.to.buses[index]["data"]["name"],
+                              onPressed: (){
+                                BusDataViewModel.to.setTargetBusId(
+                                    CurrentUserDataViewModel.to.buses[index]['id']
+                                );
+                                Get.toNamed("/home");
+                                // Get.toNamed("/home");
+                              },
+                            ),
                           );
                           // return MyOpacityRisingWidget(
                           //   child: MyAnimatedBusButton(
@@ -172,9 +180,11 @@ class _BusSelectionPageState extends State<BusSelectionPage> {
 
 class MyAnimatedBusButton extends StatelessWidget {
   String title;
+  final Function onPressed;
   MyAnimatedBusButton({
     super.key,
-    required this.title
+    required this.title,
+    required this.onPressed,
   });
 
   @override
@@ -182,7 +192,9 @@ class MyAnimatedBusButton extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: 8),
       child: MyAnimatedButton(
-        onPressed: (){},
+        onPressed: (){
+          onPressed();
+        },
         child: Padding(
           padding: DefaultDatas.buttonPadding,
           child: Row(
@@ -290,7 +302,7 @@ class MyAnimatedAddButton extends StatelessWidget {
             // ),
             // SizedBox(height: 22,),
             AspectRatio(
-              aspectRatio: 1.5,
+              aspectRatio: 2,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -337,10 +349,10 @@ class MyAnimatedAddButton extends StatelessWidget {
                                           SizedBox(height: 16,),
                                           SizedBox(
                                             width: double.infinity,
-                                            height: 70,
+                                            height: 60,
                                             child: MyAnimatedButton(
                                                 onPressed: (){
-                                                  UserDataController.to.createBus(
+                                                  CurrentUserDataViewModel.to.createBus(
                                                     busNameController.text,
                                                     busDescriptionController.text
                                                   );
@@ -367,7 +379,7 @@ class MyAnimatedAddButton extends StatelessWidget {
                       );
                     },
                   ),
-                  SizedBox(width: 16,),
+                  SizedBox(width: 8,),
                   LayoutBuilder(
                     builder: (context, constraints) {
                       return SizedBox(

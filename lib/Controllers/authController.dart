@@ -3,6 +3,11 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+// TODO: asyncQueue 적용하기
+
+// 실제 로직에 사용되는 변수와 그렇지 않은 변수가 섞여 있어서 Service와 ViewModel을 분리
+// Service는 실제 로직을 담당하고, ViewModel은 UI또는 반환에 필요한 변수와 함수를 제공
+
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 

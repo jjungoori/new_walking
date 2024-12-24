@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:new_walking/Controllers/busDataController.dart';
 import 'package:new_walking/Controllers/userDataController.dart';
 import 'package:new_walking/pages/busSelectionPage.dart';
 import 'package:new_walking/pages/homePage.dart';
@@ -14,6 +15,7 @@ import 'package:rive/rive.dart';
 import 'datas.dart';
 import 'firebase_options.dart';
 import 'package:flutter/services.dart';
+import 'package:rive/rive.dart';
 
 
 void main() async{
@@ -27,10 +29,16 @@ void main() async{
   );
   Get.put(AuthService());
   Get.put(AuthViewModel(), permanent: true);
-  Get.put(UserDataController(), permanent: true);
+  Get.put(UserDataService());
+  Get.put(CommonUserDataViewModel(), permanent: true);
+  Get.put(CurrentUserDataViewModel(), permanent: true);
+  Get.put(BusDataService());
+  Get.put(BusDataViewModel(), permanent: true);
+  // RiveFile.initializeText();
+  // RiveFile.asset('assets/videos/logoAnim.riv');
   // await RiveFile.initialize();
   // print(await KakaoSdk.origin);
-  rootBundle.load('assets/videos/logoAnim.riv');
+  // rootBundle.load('assets/videos/logoAnim.riv');
   runApp(const MyApp());
 }
 
